@@ -35,7 +35,6 @@ import org.apache.wicket.ThreadContext;
 import org.apache.wicket.page.IPageManagerContext;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WicketFilter;
-import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.cycle.RequestCycle;
@@ -236,13 +235,8 @@ public class EventBusMock extends EventBus
 			this.broadcaster.broadcast(response.toString(), _resource);
 
 			final Response webResponse = this.tester.getRequestCycle().getResponse();
-
-			// Test mode
-			if (webResponse.getContainerResponse() instanceof MockHttpServletResponse)
-			{
-				webResponse.reset();
-				webResponse.write(response.toString());
-			}
+			webResponse.reset();
+			webResponse.write(response.toString());
 		}
 	}
 
@@ -295,11 +289,11 @@ public class EventBusMock extends EventBus
 					"registering {} for page {} for session {}: {}{}",
 					new Object[] {
 							subscription.getBehaviorIndex() == null ? "component" : "behavior",
-									page.getPageId(),
-									Session.get().getId(),
-									subscription.getComponentPath(),
-									subscription.getBehaviorIndex() == null ? "" : ":"
-											+ subscription.getBehaviorIndex() });
+							page.getPageId(),
+							Session.get().getId(),
+							subscription.getComponentPath(),
+							subscription.getBehaviorIndex() == null ? "" : ":"
+									+ subscription.getBehaviorIndex() });
 		}
 		final PageKey pageKey = new PageKey(page.getPageId(), Session.get().getId());
 		if (!this.subscriptions.containsEntry(pageKey, subscription))
