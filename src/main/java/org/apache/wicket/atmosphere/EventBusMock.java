@@ -136,7 +136,8 @@ public class EventBusMock extends EventBus
 		this.mapperContext = mapperContext;
 
 		this.resource = AtmosphereResourceFactory.getDefault().create(
-				EventBusMock.framework.getAtmosphereConfig(), Mockito.mock(Broadcaster.class),
+				EventBusMock.framework.getAtmosphereConfig(),
+				EventBusMock.broadcasterFactory.get(),
 				AtmosphereResponse.newInstance().request(AtmosphereRequest.newInstance()),
 				Mockito.mock(AsyncSupport.class), Mockito.mock(AtmosphereHandler.class));
 	}
@@ -279,11 +280,11 @@ public class EventBusMock extends EventBus
 					"registering {} for page {} for session {}: {}{}",
 					new Object[] {
 							subscription.getBehaviorIndex() == null ? "component" : "behavior",
-							page.getPageId(),
-							Session.get().getId(),
-							subscription.getComponentPath(),
-							subscription.getBehaviorIndex() == null ? "" : ":"
-									+ subscription.getBehaviorIndex() });
+									page.getPageId(),
+									Session.get().getId(),
+									subscription.getComponentPath(),
+									subscription.getBehaviorIndex() == null ? "" : ":"
+											+ subscription.getBehaviorIndex() });
 		}
 		final PageKey pageKey = new PageKey(page.getPageId(), Session.get().getId());
 		if (!this.subscriptions.containsEntry(pageKey, subscription))
