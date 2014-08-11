@@ -38,6 +38,7 @@ import org.apache.wicket.protocol.http.WicketFilter;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.util.tester.WicketTester;
 import org.atmosphere.cpr.AsyncSupport;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
@@ -73,6 +74,8 @@ public class EventBusMock extends EventBus
 	private static final Logger LOGGER = LoggerFactory.getLogger(EventBusMock.class);
 	final static BroadcasterFactoryMock broadcasterFactory;
 	private Page page;
+
+	private WicketTester tester;
 
 	static
 	{
@@ -230,7 +233,8 @@ public class EventBusMock extends EventBus
 		{
 			System.out.println("~~~ " + response.toString());
 			this.broadcaster.broadcast(response.toString(), _resource);
-			requestCycle.getResponse().write(response.toString());
+			this.tester.getRequestCycle().getResponse().reset();
+			this.tester.getRequestCycle().getResponse().write(response.toString());
 		}
 	}
 
@@ -331,6 +335,11 @@ public class EventBusMock extends EventBus
 	public AtmosphereResource getResource()
 	{
 		return this.resource;
+	}
+
+	public void setTester(final WicketTester _tester)
+	{
+		this.tester = _tester;
 	}
 
 }
