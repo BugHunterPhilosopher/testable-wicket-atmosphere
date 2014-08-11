@@ -225,11 +225,12 @@ public class EventBusMock extends EventBus
 				(ServletWebRequest)this.application.newWebRequest(httpRequest, filterPath),
 				pageKey, subscriptionsForPage, event);
 		final Response response = new AtmosphereWebResponse(_resource.getResponse());
-		if (this.application.createRequestCycle(req, response).processRequestAndDetach())
+		final RequestCycle requestCycle = this.application.createRequestCycle(req, response);
+		if (requestCycle.processRequestAndDetach())
 		{
 			System.out.println("~~~ " + response.toString());
 			this.broadcaster.broadcast(response.toString(), _resource);
-			RequestCycle.get().getResponse().write(response.toString());
+			requestCycle.getResponse().write(response.toString());
 		}
 	}
 
@@ -282,11 +283,11 @@ public class EventBusMock extends EventBus
 					"registering {} for page {} for session {}: {}{}",
 					new Object[] {
 							subscription.getBehaviorIndex() == null ? "component" : "behavior",
-							page.getPageId(),
-							Session.get().getId(),
-							subscription.getComponentPath(),
-							subscription.getBehaviorIndex() == null ? "" : ":"
-									+ subscription.getBehaviorIndex() });
+									page.getPageId(),
+									Session.get().getId(),
+									subscription.getComponentPath(),
+									subscription.getBehaviorIndex() == null ? "" : ":"
+											+ subscription.getBehaviorIndex() });
 		}
 		final PageKey pageKey = new PageKey(page.getPageId(), Session.get().getId());
 		if (!this.subscriptions.containsEntry(pageKey, subscription))
