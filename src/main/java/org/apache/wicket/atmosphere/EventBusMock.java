@@ -37,6 +37,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.Response;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.atmosphere.cpr.AsyncSupport;
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereFramework;
@@ -228,6 +229,7 @@ public class EventBusMock extends EventBus
 		{
 			System.out.println("~~~ " + response.toString());
 			this.broadcaster.broadcast(response.toString(), _resource);
+			RequestCycle.get().getResponse().write(response.toString());
 		}
 	}
 
@@ -280,11 +282,11 @@ public class EventBusMock extends EventBus
 					"registering {} for page {} for session {}: {}{}",
 					new Object[] {
 							subscription.getBehaviorIndex() == null ? "component" : "behavior",
-									page.getPageId(),
-									Session.get().getId(),
-									subscription.getComponentPath(),
-									subscription.getBehaviorIndex() == null ? "" : ":"
-											+ subscription.getBehaviorIndex() });
+							page.getPageId(),
+							Session.get().getId(),
+							subscription.getComponentPath(),
+							subscription.getBehaviorIndex() == null ? "" : ":"
+									+ subscription.getBehaviorIndex() });
 		}
 		final PageKey pageKey = new PageKey(page.getPageId(), Session.get().getId());
 		if (!this.subscriptions.containsEntry(pageKey, subscription))
