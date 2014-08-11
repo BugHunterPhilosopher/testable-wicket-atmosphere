@@ -35,6 +35,7 @@ import org.apache.wicket.ThreadContext;
 import org.apache.wicket.page.IPageManagerContext;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WicketFilter;
+import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.request.cycle.RequestCycle;
@@ -233,8 +234,15 @@ public class EventBusMock extends EventBus
 		{
 			System.out.println("~~~ " + response.toString());
 			this.broadcaster.broadcast(response.toString(), _resource);
-			this.tester.getRequestCycle().getResponse().reset();
-			this.tester.getRequestCycle().getResponse().write(response.toString());
+
+			final Response webResponse = this.tester.getRequestCycle().getResponse();
+
+			// Test mode
+			if (webResponse.getContainerResponse() instanceof MockHttpServletResponse)
+			{
+				webResponse.reset();
+				webResponse.write(response.toString());
+			}
 		}
 	}
 
